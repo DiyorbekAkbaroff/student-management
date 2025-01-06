@@ -76,18 +76,16 @@ int main() {
                 get_students();
                 break;
             
+            case 8:
+                exit();
+                break;
+            
             default:
                 puts("Invalid choice.");
                 break;
         }
     }
-
-    puts("Programm is closed...");
     
-    // Free allocated memory before exiting
-    free(students);
-    free(lessons);
-    free(scores);
     return 0;
 }
 
@@ -153,4 +151,15 @@ void get_students() {
             students[i].parent.contact.email
         );
     }
+}
+
+void exit() {
+    // Free allocated memory before exiting
+    free(students);
+    free(lessons);
+    free(scores);
+
+    puts("Programm is closed...");
+
+    exit(0);
 }
