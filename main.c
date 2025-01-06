@@ -45,16 +45,45 @@ int score_count = 0;
 // Function Prototypes
 void add_student();
 void get_students();
-void get_student_detail();
-void get_student_by_name();
-void add_lesson();
-void add_score();
-void get_lesson_statistics();
+// void get_student_detail();
+// void get_student_by_name();
+// void add_lesson();
+// void add_score();
+// void get_lesson_statistics();
 void menu();
 
 // Main Function
 int main() {
-    menu();
+
+    puts("Programm is running...");
+
+    students = malloc(sizeof(Student));
+    lessons = malloc(sizeof(Lesson));
+    scores = malloc(sizeof(Score));
+
+    while (1) {
+        menu();
+
+        int choice;
+        printf("Enter your choice: "); scanf("%d", &choice); getchar();
+
+        switch (choice) {
+            case 1:
+                add_student();
+                break;
+            
+            case 2:
+                get_students();
+                break;
+            
+            default:
+                puts("Invalid choice.");
+                break;
+        }
+    }
+
+    puts("Programm is closed...");
+    
     // Free allocated memory before exiting
     free(students);
     free(lessons);
@@ -64,59 +93,64 @@ int main() {
 
 // Function Definitions
 void menu() {
-    int choice;
-    do {
-        printf("\n1. Add Student\n2. View Students\n3. View Student Details\n4. Find Student by Name\n5. Add Lesson\n6. Add Score\n7. Get Lesson Statistics\n8. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1: add_student(); break;
-            case 2: get_students(); break;
-            case 3: get_student_detail(); break;
-            case 4: get_student_by_name(); break;
-            case 5: add_lesson(); break;
-            case 6: add_score(); break;
-            case 7: get_lesson_statistics(); break;
-            case 8: printf("Exiting...\n"); break;
-            default: printf("Invalid choice, try again.\n");
-        }
-    } while (choice != 8);
+    printf("\n1. Add Student\n");
+    printf("2. View Students\n");
+    printf("3. View Student Details\n");
+    printf("4. Find Student by Name\n");
+    printf("5. Add Lesson\n");
+    printf("6. Add Score\n");
+    printf("7. Get Lesson Statistics\n");
+    printf("8. Exit\n");
 }
 
 void add_student() {
-    students = realloc(students, (student_count + 1) * sizeof(Student));
-    if (!students) {
-        printf("Memory allocation failed!\n");
-        exit(1); // dasturni ishini yakunlash
-    }
+    Student student;
 
     printf("Enter first name: ");
-    scanf("%s", students[student_count].first_name);
+    scanf("%s", student.first_name);
 
     printf("Enter last name: ");
-    scanf("%s", students[student_count].last_name);
+    scanf("%s", student.last_name);
 
     printf("Enter age: ");
-    scanf("%d", &students[student_count].age);
+    scanf("%d", &student.age);
 
     printf("Enter phone: ");
-    scanf("%s", students[student_count].contact.phone);
+    scanf("%s", student.contact.phone);
 
     printf("Enter email: ");
-    scanf("%s", students[student_count].contact.email);
+    scanf("%s", student.contact.email);
 
     printf("Enter parent's name: ");
-    scanf("%s", students[student_count].parent.name);
+    scanf("%s", student.parent.name);
 
     printf("Enter parent's phone: ");
-    scanf("%s", students[student_count].parent.contact.phone);
+    scanf("%s", student.parent.contact.phone);
 
     printf("Enter parent's email: ");
-    scanf("%s", students[student_count].parent.contact.email);
+    scanf("%s", student.parent.contact.email);
+
+    students = realloc(students, sizeof(Student) * (student_count + 1));
+    students[student_count] = student;
 
     student_count++;
     printf("Student added successfully!\n");
+
 }
 
-// yuqoridagi misoldan qarab bajarish mumkin
+void get_students() {
+    puts("First Name | Last Name | Age | Phone        | Email             | Parent's Name | Parent's Phone | Parent's Email");
+    puts("-------------------------------------------------------------------------------------------------------------");
+    for (int i = 0; i < student_count; i++) {
+        printf("%-10s | %-9s | %-3d | %-10s | %-16s | %-13s | %-14s | %-16s\n",
+            students[i].first_name,
+            students[i].last_name,
+            students[i].age,
+            students[i].contact.phone,
+            students[i].contact.email,
+            students[i].parent.name,
+            students[i].parent.contact.phone,
+            students[i].parent.contact.email
+        );
+    }
+}
