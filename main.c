@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structures
 typedef struct {
     char phone[15];
     char email[50];
@@ -32,7 +31,6 @@ typedef struct {
     int score;
 } Score;
 
-// Global Variables
 Student* students = NULL;
 int student_count = 0;
 
@@ -42,20 +40,18 @@ int lesson_count = 0;
 Score* scores = NULL;
 int score_count = 0;
 
-// Function Prototypes
 void add_student();
 void get_students();
-// void get_student_detail();
-// void get_student_by_name();
-// void add_lesson();
-// void add_score();
-// void get_lesson_statistics();
+void get_student_detail();
+void get_student_by_name();
+void add_lesson();
+void add_score();
+void get_lesson_statistics();
 void menu();
 
-// Main Function
 int main() {
 
-    puts("Programm is running...");
+    puts("Program is running...");
 
     students = malloc(sizeof(Student));
     lessons = malloc(sizeof(Lesson));
@@ -75,9 +71,29 @@ int main() {
             case 2:
                 get_students();
                 break;
-            
+
+            case 3:
+                get_student_detail();
+                break;
+
+            case 4:
+                get_student_by_name();
+                break;
+
+            case 5:
+                add_lesson();
+                break;
+
+            case 6:
+                add_score();
+                break;
+
+            case 7:
+                get_lesson_statistics();
+                break;
+
             case 8:
-                exit();
+                exit(0);
                 break;
             
             default:
@@ -153,13 +169,122 @@ void get_students() {
     }
 }
 
-void exit() {
-    // Free allocated memory before exiting
-    free(students);
-    free(lessons);
-    free(scores);
+void get_student_detail() {
+    int id;
+    printf("Enter student ID (0 to %d): ", student_count - 1);
+    scanf("%d", &id);
 
-    puts("Programm is closed...");
+    if (id < 0 || id >= student_count) {
+        printf("Invalid student ID!\n");
+        return;
+    }
 
-    exit(0);
+    Student s = students[id];
+    printf("\nFirst Name: %s\n", s.first_name);
+    printf("Last Name: %s\n", s.last_name);
+    printf("Age: %d\n", s.age);
+    printf("Phone: %s\n", s.contact.phone);
+    printf("Email: %s\n", s.contact.email);
+    printf("Parent's Name: %s\n", s.parent.name);
+    printf("Parent's Phone: %s\n", s.parent.contact.phone);
+    printf("Parent's Email: %s\n", s.parent.contact.email);
+}
+
+void get_student_by_name() {
+    char name[50];
+    printf("Enter first name to search: ");
+    scanf("%s", name);
+
+    int found = 0;
+    for (int i = 0; i < student_count; i++) {
+        if (strcmp(students[i].first_name, name) == 0) {
+            printf("%-10s | %-9s | %-3d | %-10s | %-16s | %-13s\n",
+                students[i].first_name,
+                students[i].last_name,
+                students[i].age,
+                students[i].contact.phone,
+                students[i].contact.email,
+                students[i].parent.name
+            );
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("No student found with the name %s\n", name);
+    }
+}
+
+void add_lesson() {
+    Lesson lesson;
+
+    printf("Enter lesson ID: ");
+    scanf("%d", &lesson.id);
+
+    printf("Enter lesson name: ");
+    scanf("%s", lesson.name);
+
+    lessons = realloc(lessons, sizeof(Lesson) * (lesson_count + 1));
+    lessons[lesson_count] = lesson;
+
+    lesson_count++;
+    printf("Lesson added successfully!\n");
+}
+
+void add_score() {
+    int student_id, lesson_id, score_value;
+
+    printf("Enter student ID (0 to %d): ", student_count - 1);
+    scanf("%d", &student_id);
+
+    if (student_id < 0 || student_id >= student_count) {
+        printf("Invalid student ID!\n");
+        return;
+    }
+
+    printf("Enter lesson ID (0 to %d): ", lesson_count - 1);
+    scanf("%d", &lesson_id);
+
+    if (lesson_id < 0 || lesson_id >= lesson_count) {
+        printf("Invalid lesson ID!\n");
+        return;
+    }
+
+    printf("Enter score: ");
+    scanf("%d", &score_value);
+
+    Score score;
+    score.student = students[student_id];
+    score.lesson = lessons[lesson_id];
+    score.score = score_value;
+
+    scores = realloc(scores, sizeof(Score) * (score_count + 1));
+    scores[score_count] = score;
+
+    score_count++;
+    printf("Score added successfully!\n");
+}
+
+void get_lesson_statistics() {
+    if (lesson_count == 0) {
+        printf("No lessons available!\n");
+        return;
+    }
+
+    for (int i = 0; i < lesson_count; i++) {
+        int total_score = 0, count = 0;
+
+        for (int j = 0; j < score_count; j++) {
+            if (scores[j].lesson.id == lessons[i].id) {
+                total_score += scores[j].score;
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            printf("Lesson: %s | Average Score: %.2f\n", lessons[i].name, (float)total_score / count);
+        } else {
+            printf("Lesson: %s | No scores available\n", lessons[i].name);
+        }
+    }
 }
