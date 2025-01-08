@@ -272,17 +272,17 @@ void get_lesson_statistics() {
     }
 
     for (int i = 0; i < lesson_count; i++) {
-        int total_score = 0, count = 0;
+        int umumiy = 0, count = 0;
 
         for (int j = 0; j < score_count; j++) {
             if (scores[j].lesson.id == lessons[i].id) {
-                total_score += scores[j].score;
+                umumiy += scores[j].score;
                 count++;
             }
         }
 
         if (count > 0) {
-            printf("Lesson: %s | Average Score: %.2f\n", lessons[i].name, (float)total_score / count);
+            printf("Lesson: %s | Average Score: %.2f\n", lessons[i].name, (float)umumiy / count);
         } else {
             printf("Lesson: %s | No scores available\n", lessons[i].name);
         }
